@@ -167,9 +167,9 @@ Adicione a seguinte linha no final do arquivo para definir a variável de ambien
 Salve o arquivo e feche o editor de texto. 
 
 Atualize as variáveis de ambiente executando o seguinte comando: 
-> <pre><code>source ~/.bashrc </pre></code>
+> <pre><code>source ~/.bashrc /pre></code>
 Verifique se a variável de ambiente JAVA_HOME foi configurada corretamente executando o seguinte comando: 
-> <pre><code>echo $JAVA_HOME </pre></code>
+> <pre><code>echo $JAVA_HOME</pre></code>
 Você deve ver o caminho de instalação do Java que você definiu. 
 
 Com a variável de ambiente JAVA_HOME configurada, o sistema saberá onde encontrar a instalação do Java 17 sempre que você executar um comando que dependa dele. 
@@ -185,7 +185,7 @@ Verifique se o Maven foi instalado corretamente executando o seguinte comando:
 Você deve ver a versão instalada do Maven e outras informações relacionadas. 
 
 Configure a variável de ambiente Maven_home. Abra o arquivo .bashrc usando um editor de texto com o seguinte comando: 
-> <pre><code>nano ~/.bashrc</pre></code> 
+> <pre><code>sudo nano ~/.bashrc</pre></code> 
 Adicione a seguinte linha ao final do arquivo: 
 > <pre><code>export MAVEN_HOME=/usr/share/maven</pre></code> 
 Salve o arquivo e feche o editor de texto. 
@@ -213,7 +213,7 @@ Depois atualizar a máquina com o comando:
 Agora só baixar o serviço Jenkins: 
 ><pre><code>sudo dnf install jenkins</pre></code> 
 Depois de ter baixado o Jenkins você reiniciar o serviço: 
-><pre><code>sudo systemctl daemon-reload </pre></code> 
+><pre><code>sudo systemctl daemon-reload</pre></code> 
 E iniciar o serviço: 
 ><pre><code>sudo systemctl start jenkins</pre></code> 
 
@@ -506,3 +506,141 @@ Após criar o arquivo Dockerfile abra o arquivo pom.xml e nas últimas linhas 
  # Postman
  ## Testando o projeto
  Agora que a parte de código está finalizada. Abriremos o Postman para ver se está cadastrando as informações no banco de dados. Veja o exemplo abaixo:
+
+ <div align="center">
+    <img src="imagens/postman-tela.png" alt="Cadastrando com postman">
+ </div>
+<br>
+ <div align="center">
+    <img src="imagens/select.png" alt="Tela MySQL Workbench" height="500">
+ </div>
+
+ ---
+ # Github
+Agora que o projeto está cadastrando dentro MySQl Workbench, subiremos ele ao Github onde devemos criar um repositório online e depois mandar os arquivos do projeto nele com seguintes comandos:
+
+- 1 Iremos utilizar o comando git init, que é um comando único que você usa durante a configuração inicial de um novo repositório.
+ ><pre><code>git init</pre></code>
+- 2 git add . ,que é um comando necessário para selecionar as alterações que vão ser preparadas para o próximo commit.
+><pre><code>git add .</pre></code>
+- 3 git commit -m "", que é usado para criar um instantâneo das alterações preparadas em um cronograma de um histórico de projetos do Git.
+><pre><code>git commit -m "Init: Subindo o projeto jenkins" </pre></code>
+- 4  git branch -M , comando que permite criar, listar, renomear e excluir ramificações.
+><pre><code>git branch -M main</pre></code>
+- 5  git remote add, comando que permite criar conexões com repositório.
+><pre><code>git remote add https://github.com/NomeUsuario/nomeRepositorio</pre></code>
+- 6 git push, comando para subir os arquivos no repositório.
+><pre><code>git push -u origin main</pre></code>
+
+---
+# Jenkins
+## Configurando o Jenkins
+Para entrar no Jenkins, basta entrar em seu navegador e colocar seu ip localhost(“127.0.0.1”) com a porta padrão do Jenkins: http://127.0.0.1/8080. Lá na aplicação, faça todas as configurações iniciais de usuário. Após configurar e enfim entrar, siga o caminho abaixo para adicionar o Maven ao Jenkins:
+
+***Painel de controle > Gerenciar Jenkins > Ferramenta de configuração global > Maven > Adicionar Maven***
+
+ <div align="center">
+    <img src="imagens/jenkins-maven.png" alt="Configurando o maven no jenkins">
+ </div>
+
+ ---
+
+ ## Criando uma nova tarefa
+
+Na tela de Painel de Controle, clique em Nova Tarefa, Coloque um nome e escolha Pipeline e finalize clicando no botão “Tudo Certo”. Depois disso, marque a caixa “GitHub hook trigger fot GITScm polling”: e coloque o repositório criando do projeto. Mais para abaixo terá a parte script Pipeline e dentro dele você colocara os seguintes comandos:
+
+```
+pipeline{ 
+
+    agent any 
+
+    //Biblioteca 
+
+    tools{ 
+
+        maven 'maven_3_8_5' //Nome do maven 
+
+    } 
+
+    //Estágio de ação 
+
+    stages{ 
+
+          //Estágio para criar o maven 
+
+        stage('Build Maven 3.8.5'){ 
+
+            steps{ 
+
+                //Comando para criar um git clone 
+
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Isack2022/Projeto-Jenkins']]) 
+
+                //Comando sh é para escrever no terminal 
+
+                sh 'mvn clean install' 
+
+            } 
+
+        } 
+
+        //Estágio para deletar a imagem e o container  
+
+        stage('Delete from docker image in container'){ 
+
+            steps{ 
+
+                script{ 
+
+                    sh 'docker rm -f senac-tarefa .' 
+
+                    sh 'docker rmi senac/tarefa' 
+
+                } 
+
+            } 
+
+        } 
+
+        //Estágio para criar a imagem do docker 
+
+        stage('Build image docker'){ 
+
+            steps{ 
+
+                script{ 
+
+                    sh 'docker build -t senac/tarefa .' 
+
+                } 
+
+            } 
+
+        } 
+
+        //Estágio para criar um container no docker  
+
+        stage('Creating the container'){ 
+
+            steps{ 
+
+                script{ 
+
+                    sh 'docker --name senac-tarefa -p 8095:8095 -d senac/tarefa' 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+```
+Enfim, salve as configurações e clique no botão “Construa Agora”. Todas as informações do processo do script irão aparece na aba “Status” e se tiver tudo verde como está aparecendo na imagem abaixo o seu projeto está pronto para ser testando, basta colocar o ip localhost, a porta do spring(“8095”) e o caminho do Controller em AtividadeController no navegador assim: http://127.0.0.1:8095/tarefa/listar. 
+  <div align="center">
+    <img src="imagens/jenkins-tester.png" alt="Final teste">
+ </div>
+
+**E com isso foi finalizando o projeto.**
