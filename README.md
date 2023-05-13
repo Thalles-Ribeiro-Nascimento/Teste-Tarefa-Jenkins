@@ -44,7 +44,7 @@
 <br>
 <div align="center">
     <a href="https://fedoraproject.org/server/download/">
-        <img src ="imagens/fedora-logo.png" alt="Logo fedora" width="250" height="250">
+        <img src ="imagens/Fedora-logo.png" alt="Logo fedora" width="250" height="250">
     </a>
 </div >
 <br>
@@ -142,7 +142,7 @@
 <br>
 <div align="center">
     <a href="https://github.com/">
-        <img src ="imagens/Github-logo.jpg" alt="Logo Github" width="250" height="250">
+        <img src ="imagens/github-logo.jpg" alt="Logo Github" width="250" height="250">
     </a>
 </div >
 <br>
@@ -512,7 +512,7 @@ Após criar o arquivo Dockerfile abra o arquivo pom.xml e nas últimas linhas 
  </div>
 <br>
  <div align="center">
-    <img src="imagens/select.png" alt="Tela MySQL Workbench" height="500">
+    <img src="imagens/select.png" alt="Tela MySQL Workbench">
  </div>
 
  ---
