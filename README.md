@@ -23,9 +23,9 @@
 + Eclipse
     + Instalando o Spring-Boot
     + Criando o projeto Spring
-        + Criando a camanda Domain
-        + Criando a camanda Repository
-        + Criando a camanda Controller
+        + Criando a camada Domain
+        + Criando a camada Repository
+        + Criando a camada Controller
         + Configurando application.properties 
         + Criando o Dockerfile e configurando porm.xml 
 + Postman
