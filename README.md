@@ -167,7 +167,7 @@ Adicione a seguinte linha no final do arquivo para definir a variável de ambien
 Salve o arquivo e feche o editor de texto. 
 
 Atualize as variáveis de ambiente executando o seguinte comando: 
-> <pre><code>source ~/.bashrc /pre></code>
+> <pre><code>source ~/.bashrc </pre></code>
 Verifique se a variável de ambiente JAVA_HOME foi configurada corretamente executando o seguinte comando: 
 > <pre><code>echo $JAVA_HOME</pre></code>
 Você deve ver o caminho de instalação do Java que você definiu. 
